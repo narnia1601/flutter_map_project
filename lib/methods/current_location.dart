@@ -5,6 +5,9 @@ class CurrentLocation {
   StreamSubscription<Position>? _positionStreamSubscription;
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 
+  double latitude = 0;
+  double longitude = 0;
+
   Future<Position> determinePosition() async {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
@@ -13,11 +16,10 @@ class CurrentLocation {
     _positionStreamSubscription = positionStream.handleError((error) {
       _positionStreamSubscription?.cancel();
       _positionStreamSubscription = null;
-    }).listen((position) {});
-    double latitude = position.latitude;
-    double longitude = position.longitude;
-    print(latitude);
-    print(longitude);
+    }).listen((position) {
+      latitude = position.latitude;
+      longitude = position.longitude;
+    });
     return position;
   }
 }

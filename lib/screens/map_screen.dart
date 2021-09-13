@@ -1,23 +1,32 @@
+import 'package:flutter_map_project/methods/current_location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapScreen extends StatefulWidget {
   @override
   _MapScreenState createState() => _MapScreenState();
 }
 
+CurrentLocation currentLocation = CurrentLocation();
+
 class _MapScreenState extends State<MapScreen> {
   Completer<GoogleMapController> _controller = Completer();
-  static final CameraPosition cameraPosition = CameraPosition(
-    target: LatLng(1.3960, 103.875),
+  @override
+  void initState() {
+    super.initState();
+    currentLocation.determinePosition();
+  }
+
+  void determinePosition() async {
+    await currentLocation.determinePosition();
+  }
+
+  CameraPosition cameraPosition = CameraPosition(
+    target: LatLng(currentLocation.latitude, currentLocation.longitude),
     zoom: 14.4746,
   );
-  static final CameraPosition housePosition = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(1.3960, 103.8750),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +37,9 @@ class _MapScreenState extends State<MapScreen> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('Go to the lake!'),
-        icon: Icon(Icons.directions_boat),
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
       ),
     );
-  }
-
-  Future _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(housePosition));
   }
 }

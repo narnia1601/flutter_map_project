@@ -11,11 +11,18 @@ class CurrentLocationScreen extends StatefulWidget {
 class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
   CurrentLocation currentLocation = CurrentLocation();
   @override
+  void initState() {
+    super.initState();
+    currentLocation.determinePosition();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          currentLocation.determinePosition();
+          print('${currentLocation.latitude}');
+          print('${currentLocation.longitude}');
         },
         child: Icon(
           Icons.location_pin,
